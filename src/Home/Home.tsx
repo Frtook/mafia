@@ -55,7 +55,7 @@ export default function Home() {
               name={e}
               key={i}
               handleDelete={() => {
-                setUsers([...users].filter((e, index) => i !== index));
+                setUsers([...users].filter((_, index) => i !== index));
               }}
               handleEdit={() => {
                 setIndexEdit(i);
@@ -116,7 +116,7 @@ export default function Home() {
           title={`تعديل ${users[indexEdit]}`}
           handleClick={() => {
             setUsers(
-              [...users, user].filter((e, index) => index !== indexEdit)
+              [...users, user].filter((_, index) => index !== indexEdit)
             );
             setIsPopup({ ...isPopup, EditUser: false });
             setUser("");
