@@ -85,7 +85,7 @@ export function getVoteName(game: Person[]): string {
   names = names.sort((a, b) => b.count - a.count);
 
   if (names[0].count === names[1].count) {
-    return "";
+    return "2";
   }
   return names[0].name;
 }

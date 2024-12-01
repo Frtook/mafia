@@ -94,6 +94,7 @@ export default function Home() {
       </div>
       {isPopup.addUser && (
         <Popup
+          handleClose={() => setIsPopup({ ...isPopup, addUser: false })}
           title="اضافه لاعب"
           handleClick={() => {
             setIsPopup({ ...isPopup, addUser: false });
@@ -113,6 +114,7 @@ export default function Home() {
       )}
       {isPopup.EditUser && (
         <Popup
+          handleClose={() => setIsPopup({ ...isPopup, EditUser: false })}
           title={`تعديل ${users[indexEdit]}`}
           handleClick={() => {
             setUsers(
@@ -133,7 +135,8 @@ export default function Home() {
       )}
       {isPopup.info && (
         <Popup
-          className="translate-y-[10%]"
+          handleClose={() => setIsPopup({ ...isPopup, info: false })}
+          className="translate-y-[20px]"
           title="شرح اللعبة"
           handleClick={() => setIsPopup({ ...isPopup, info: false })}
         >

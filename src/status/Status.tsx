@@ -31,7 +31,7 @@ export default function Status() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-10 my-32">
+    <div className="flex flex-col items-center justify-center gap-10 my-10">
       <Link to="/" className="self-start">
         <img
           src="/icons/home.svg"
@@ -50,14 +50,13 @@ export default function Status() {
       )}
       {vote && (
         <>
-          {voteName.length === 0 && (
-            <>
-              <p className="text-3xl text-main-200 lg:text-5xl">
-                {currentUser.user}
-              </p>
-              <Button text="اظهار" handleClick={() => setShow(true)} />
-            </>
-          )}
+          <>
+            <p className="text-3xl text-main-200 lg:text-5xl">
+              {currentUser.user}
+            </p>
+            <Button text="اظهار" handleClick={() => setShow(true)} />
+          </>
+
           {show && (
             <>
               <Vote
@@ -74,15 +73,20 @@ export default function Status() {
                   );
                   if (next === gameStruct.length - 1) {
                     const updatedVoteName = getVoteName(gameStruct);
+                    console.log(updatedVoteName);
                     setVoteName(updatedVoteName);
-                    if (getMafi(gameStruct) === voteName) {
+                    console.log(voteName);
+                    if (getMafi(gameStruct) === updatedVoteName) {
                       setVote(false);
+                    } else {
+                      const updatedGameStruct = deleteUser(
+                        updatedVoteName,
+                        gameStruct
+                      );
+                      setGameStruct(updatedGameStruct);
                     }
-                    const updatedGameStruct = deleteUser(
-                      updatedVoteName,
-                      gameStruct
-                    );
-                    setGameStruct(updatedGameStruct);
+
+                    console.log(gameStruct.length);
                   }
                   setShow(false);
                 }}
@@ -91,19 +95,31 @@ export default function Status() {
           )}
         </>
       )}
-      {voteName && (
+      {voteName === "2" && (
+        <>
+          <span>تعادل</span>
+          <Link
+            to="/start"
+            className="block p-2 mt-5 font-bold text-center text-white rounded-lg bg-main-200"
+            state={{ game: gameStruct, users: getUsers(gameStruct) }}
+          >
+            رجوع
+          </Link>
+        </>
+      )}
+      {voteName != "2" && voteName && (
         <span>
           {getMafi(gameStruct) === voteName ? (
             `${voteName} هو المافيا `
           ) : (
             <>
               <span className="text-3xl"> {voteName} مش هو المافيا </span>
-              {gameStruct.length === 3 && (
+              {gameStruct.length === 2 && (
                 <span className="block mt-10 text-4xl text-center text-main-100">
                   فاز {getMafi(gameStruct)}
                 </span>
               )}
-              {gameStruct.length > 3 && (
+              {gameStruct.length >= 3 && (
                 <Link
                   to="/start"
                   className="block p-2 mt-5 font-bold text-center text-white rounded-lg bg-main-200"
