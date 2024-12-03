@@ -61,11 +61,13 @@ export function whoIsDed(game: Person[]) {
       physicianValue = e.target;
     }
   });
+
   return mafiaValue === physicianValue ? "" : mafiaValue;
 }
 
 export function deleteUser(ded: string, game: Person[]): Person[] {
-  return game.filter((e) => e.user != ded);
+  const newGame = game.filter((e) => e.user != ded);
+  return newGame;
 }
 
 export function getVoteName(game: Person[]): string {

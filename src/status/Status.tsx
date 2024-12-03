@@ -9,7 +9,6 @@ import {
 import Button from "../components/ui/Button";
 import { useEffect, useState } from "react";
 import Vote from "./Vote";
-import { Person } from "../helper/interfase";
 
 export default function Status() {
   const location = useLocation();
@@ -18,18 +17,24 @@ export default function Status() {
   const [vote, setVote] = useState(false);
   const [next, setNext] = useState(0);
   const [show, setShow] = useState(false);
+  const [end, setEnd] = useState(false);
   const [voteName, setVoteName] = useState("");
+
   const currentUser = gameStruct[next] || {};
 
-  useEffect(() => {
-    if (ded) {
-      setGameStruct((prev: Person[]) => deleteUser(ded, prev));
-    }
-  }, [ded]);
   function getChildData(data: string) {
     gameStruct[next].vote = data;
   }
-
+  useEffect(() => {}, [gameStruct]);
+  useEffect(() => {
+    if (ded) {
+      const mafia = getMafi(gameStruct);
+      if (mafia === ded) {
+        setEnd(true);
+        setVoteName(mafia);
+      }
+    }
+  }, [gameStruct, ded]);
   return (
     <div className="flex flex-col items-center justify-center gap-10 my-10">
       <Link to="/" className="self-start">
@@ -42,10 +47,18 @@ export default function Status() {
 
       {!vote && (
         <>
-          <p className="text-3xl lg:text-5xl text-main-100">
-            {ded === "" ? "مفيش احد مات" : `اللاعب ${ded} مات`}
-          </p>
-          <Button className="" text="تصويت" handleClick={() => setVote(true)} />
+          {!end && (
+            <p className="text-3xl lg:text-5xl text-main-100">
+              {ded === "" ? "مفيش احد مات" : `اللاعب ${ded} مات`}
+            </p>
+          )}
+          {!end && (
+            <Button
+              className=""
+              text="تصويت"
+              handleClick={() => setVote(true)}
+            />
+          )}
         </>
       )}
       {vote && (
@@ -54,7 +67,7 @@ export default function Status() {
             <p className="text-3xl text-main-200 lg:text-5xl">
               {currentUser.user}
             </p>
-            <Button text="اظهار" handleClick={() => setShow(true)} />
+            {!show && <Button text="اظهار" handleClick={() => setShow(true)} />}
           </>
 
           {show && (
@@ -73,9 +86,7 @@ export default function Status() {
                   );
                   if (next === gameStruct.length - 1) {
                     const updatedVoteName = getVoteName(gameStruct);
-                    console.log(updatedVoteName);
                     setVoteName(updatedVoteName);
-                    console.log(voteName);
                     if (getMafi(gameStruct) === updatedVoteName) {
                       setVote(false);
                     } else {
@@ -85,8 +96,8 @@ export default function Status() {
                       );
                       setGameStruct(updatedGameStruct);
                     }
-
-                    console.log(gameStruct.length);
+                    setEnd(true);
+                    setVote(false);
                   }
                   setShow(false);
                 }}
@@ -95,7 +106,8 @@ export default function Status() {
           )}
         </>
       )}
-      {voteName === "2" && (
+
+      {end && voteName === "2" && (
         <>
           <span>تعادل</span>
           <Link
@@ -107,13 +119,18 @@ export default function Status() {
           </Link>
         </>
       )}
-      {voteName != "2" && voteName && (
-        <span>
+      {end && voteName != "2" && voteName && (
+        <>
           {getMafi(gameStruct) === voteName ? (
-            `${voteName} هو المافيا `
+            <span className="text-4xl">
+              {" "}
+              <span className="text-main-100">{voteName}</span> هو المافيا{" "}
+            </span>
           ) : (
             <>
-              <span className="text-3xl"> {voteName} مش هو المافيا </span>
+              <span className="text-4xl">
+                <span className="text-main-100">{voteName}</span> مش هو المافيا{" "}
+              </span>
               {gameStruct.length === 2 && (
                 <span className="block mt-10 text-4xl text-center text-main-100">
                   فاز {getMafi(gameStruct)}
@@ -130,7 +147,7 @@ export default function Status() {
               )}
             </>
           )}
-        </span>
+        </>
       )}
     </div>
   );

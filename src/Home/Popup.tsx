@@ -16,7 +16,7 @@ export default function Popup({
   return (
     <div className="fixed inset-0 bg-black/30">
       <div
-        className={`flex flex-col gap-5 p-5 mx-4 translate-y-[80%] sm:w-[70%] sm:mx-auto lg:w-[50%] text-white shadow-sm bg-main-400 shadow-white ${className}`}
+        className={`flex flex-col gap-5 p-5 mx-4  sm:w-[70%] sm:mx-auto lg:w-[50%] text-white shadow-sm bg-main-400 shadow-white ${className}`}
       >
         <div className="flex justify-between">
           <h3 className="font-bold">{title}</h3>

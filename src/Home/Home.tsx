@@ -94,12 +94,15 @@ export default function Home() {
       </div>
       {isPopup.addUser && (
         <Popup
+          className="translate-y-[80%]"
           handleClose={() => setIsPopup({ ...isPopup, addUser: false })}
           title="اضافه لاعب"
           handleClick={() => {
-            setIsPopup({ ...isPopup, addUser: false });
-            setUsers([...users, user]);
-            setUser("");
+            if (user.trim()) {
+              setIsPopup({ ...isPopup, addUser: false });
+              setUsers([...users, user]);
+              setUser("");
+            }
           }}
         >
           <input
@@ -108,12 +111,12 @@ export default function Home() {
             value={user}
             onChange={(e) => setUser(e.target.value)}
             type="text"
-            required
           />
         </Popup>
       )}
       {isPopup.EditUser && (
         <Popup
+          className="translate-y-[80%]"
           handleClose={() => setIsPopup({ ...isPopup, EditUser: false })}
           title={`تعديل ${users[indexEdit]}`}
           handleClick={() => {
@@ -136,7 +139,7 @@ export default function Home() {
       {isPopup.info && (
         <Popup
           handleClose={() => setIsPopup({ ...isPopup, info: false })}
-          className="translate-y-[20px]"
+          className="translate-y-[30px]"
           title="شرح اللعبة"
           handleClick={() => setIsPopup({ ...isPopup, info: false })}
         >

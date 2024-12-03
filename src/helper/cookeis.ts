@@ -7,5 +7,3 @@ export function setCookie(name: string, vale: string) {
 export function getCookie(name: string) {
   return cookies.get(name);
 }
-// mafia he wan't kill self
-//fix if not ded for loop again

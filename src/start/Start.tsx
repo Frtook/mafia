@@ -32,11 +32,13 @@ export default function Start() {
         <p className="mb-5 text-3xl font-bold text-main-200">
           {currentUser.user}
         </p>
-        <Button
-          className="mx-auto bg-transparent border border-main-100 w-fit"
-          text={"اظهار"}
-          handleClick={() => setShow(true)}
-        />
+        {!show && (
+          <Button
+            className="mx-auto bg-transparent border border-main-100 w-fit"
+            text={"اظهار"}
+            handleClick={() => setShow(true)}
+          />
+        )}
         {show && (
           <>
             <p className="text-3xl">
