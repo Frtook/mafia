@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
 import { getMafi, getRuleAR } from "../helper/helper";
 import List from "./List";
+import Conditonal from "../components/Conditonal";
+import { gameRule } from "../helper/staticVar";
 
 export default function Start() {
   const location = useLocation();
@@ -28,69 +30,70 @@ export default function Start() {
           className="bg-main-200 p-2 size-[50px] rounded-2xl mr-5 mt-7 cursor-pointer"
         />
       </Link>
-      <main className="w-[90%] mx-auto shadow-xl text-center mt-44 flex flex-col gap-5">
+      <main className="w-[90%] mx-auto shadow-xl text-center mt-8 flex flex-col gap-5">
         <p className="mb-5 text-3xl font-bold text-main-200">
           {currentUser.user}
         </p>
-        {!show && (
+
+        <Conditonal condtion={!show}>
           <Button
             className="mx-auto bg-transparent border border-main-100 w-fit"
             text={"اظهار"}
             handleClick={() => setShow(true)}
           />
-        )}
-        {show && (
-          <>
-            <p className="text-3xl">
-              انت :
-              <span className="text-main-100">
-                {getRuleAR(currentUser.rule)}
-              </span>
-            </p>
+        </Conditonal>
+
+        <Conditonal condtion={show}>
+          <p className="text-3xl">
+            انت :
+            <span className="text-main-100">{getRuleAR(currentUser.rule)}</span>
+          </p>
+          <img
+            className="mx-auto bg-white size-20"
+            src={`/icons/${currentUser.rule}.png`}
+            alt={currentUser.rule}
+          />
+
+          <Conditonal condtion={like}>
             <img
-              className="mx-auto bg-white size-20"
-              src={`/icons/${currentUser.rule}.png`}
-              alt={currentUser.rule}
+              src="/icons/like.png"
+              className="mx-auto size-1/4"
+              alt="like"
             />
-            {like && (
-              <img
-                src="/icons/like.png"
-                className="mx-auto size-1/4"
-                alt="like"
-              />
-            )}
-            {disLike && (
-              <img
-                src="/icons/dislike.png"
-                className="mx-auto size-1/4"
-                alt="like"
-              />
-            )}
-            {["mafia", "physician", "inspector"].includes(currentUser.rule) && (
-              <List
-                users={users}
-                rule={currentUser.rule}
-                sendTo={(e) => {
-                  getChildData(e);
-                  if (currentUser.rule === "inspector") {
-                    if (currentUser.target === getMafi(gameStruct)) {
-                      if (!disLike) {
-                        setLike(true);
-                      }
-                    } else {
-                      if (!like) {
-                        setDisLike(true);
-                      }
+          </Conditonal>
+
+          <Conditonal condtion={disLike}>
+            <img
+              src="/icons/dislike.png"
+              className="mx-auto size-1/4"
+              alt="like"
+            />
+          </Conditonal>
+
+          <Conditonal condtion={gameRule.includes(currentUser.rule)}>
+            <List
+              users={users}
+              rule={currentUser.rule}
+              sendTo={(e) => {
+                getChildData(e);
+                if (currentUser.rule === "inspector") {
+                  if (currentUser.target === getMafi(gameStruct)) {
+                    if (!disLike) {
+                      setLike(true);
+                    }
+                  } else {
+                    if (!like) {
+                      setDisLike(true);
                     }
                   }
-                }}
-              />
-            )}
-          </>
-        )}
+                }
+              }}
+            />
+          </Conditonal>
+        </Conditonal>
 
         <Button
-          className="mt-20"
+          className="mt-5"
           handleClick={() => {
             setNext((prev) => (prev < users.length - 1 ? prev + 1 : prev));
             setShow(false);

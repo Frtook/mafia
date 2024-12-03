@@ -9,6 +9,7 @@ import {
 import Button from "../components/ui/Button";
 import { useEffect, useState } from "react";
 import Vote from "./Vote";
+import Conditonal from "../components/Conditonal";
 
 export default function Status() {
   const location = useLocation();
@@ -45,110 +46,95 @@ export default function Status() {
         />
       </Link>
 
-      {!vote && (
-        <>
-          {!end && (
-            <p className="text-3xl lg:text-5xl text-main-100">
-              {ded === "" ? "مفيش احد مات" : `اللاعب ${ded} مات`}
-            </p>
-          )}
-          {!end && (
-            <Button
-              className=""
-              text="تصويت"
-              handleClick={() => setVote(true)}
-            />
-          )}
-        </>
-      )}
-      {vote && (
-        <>
-          <>
-            <p className="text-3xl text-main-200 lg:text-5xl">
-              {currentUser.user}
-            </p>
-            {!show && <Button text="اظهار" handleClick={() => setShow(true)} />}
-          </>
+      <Conditonal condtion={!vote}>
+        <Conditonal condtion={!end}>
+          <p className="text-3xl lg:text-5xl text-main-100">
+            {ded === "" ? "مفيش احد مات" : `اللاعب ${ded} مات`}
+          </p>
+        </Conditonal>
+        <Conditonal condtion={!end}>
+          <Button className="" text="تصويت" handleClick={() => setVote(true)} />
+        </Conditonal>
+      </Conditonal>
 
-          {show && (
-            <>
-              <Vote
-                game={gameStruct}
-                sendTo={(e) => {
-                  getChildData(e);
-                }}
-              />
-              <Button
-                text="التالي"
-                handleClick={() => {
-                  setNext((prev) =>
-                    prev < gameStruct.length - 1 ? prev + 1 : prev
+      <Conditonal condtion={vote}>
+        <p className="text-3xl text-main-200 lg:text-5xl">{currentUser.user}</p>
+        <Conditonal condtion={!show}>
+          <Button text="اظهار" handleClick={() => setShow(true)} />
+        </Conditonal>
+        <Conditonal condtion={show}>
+          <Vote
+            game={gameStruct}
+            sendTo={(e) => {
+              getChildData(e);
+            }}
+          />
+          <Button
+            text="التالي"
+            handleClick={() => {
+              setNext((prev) =>
+                prev < gameStruct.length - 1 ? prev + 1 : prev
+              );
+              if (next === gameStruct.length - 1) {
+                const updatedVoteName = getVoteName(gameStruct);
+                setVoteName(updatedVoteName);
+                if (getMafi(gameStruct) === updatedVoteName) {
+                  setVote(false);
+                } else {
+                  const updatedGameStruct = deleteUser(
+                    updatedVoteName,
+                    gameStruct
                   );
-                  if (next === gameStruct.length - 1) {
-                    const updatedVoteName = getVoteName(gameStruct);
-                    setVoteName(updatedVoteName);
-                    if (getMafi(gameStruct) === updatedVoteName) {
-                      setVote(false);
-                    } else {
-                      const updatedGameStruct = deleteUser(
-                        updatedVoteName,
-                        gameStruct
-                      );
-                      setGameStruct(updatedGameStruct);
-                    }
-                    setEnd(true);
-                    setVote(false);
-                  }
-                  setShow(false);
-                }}
-              />
-            </>
-          )}
-        </>
-      )}
+                  setGameStruct(updatedGameStruct);
+                }
+                setEnd(true);
+                setVote(false);
+              }
+              setShow(false);
+            }}
+          />
+        </Conditonal>
+      </Conditonal>
 
-      {end && voteName === "2" && (
-        <>
-          <span>تعادل</span>
-          <Link
-            to="/start"
-            className="block p-2 mt-5 font-bold text-center text-white rounded-lg bg-main-200"
-            state={{ game: gameStruct, users: getUsers(gameStruct) }}
-          >
-            رجوع
-          </Link>
-        </>
-      )}
-      {end && voteName != "2" && voteName && (
-        <>
-          {getMafi(gameStruct) === voteName ? (
-            <span className="text-4xl">
-              {" "}
-              <span className="text-main-100">{voteName}</span> هو المافيا{" "}
+      <Conditonal condtion={end && voteName === "2"}>
+        <span>تعادل</span>
+        <Link
+          to="/start"
+          className="block p-2 mt-5 font-bold text-center text-white rounded-lg bg-main-200"
+          state={{ game: gameStruct, users: getUsers(gameStruct) }}
+        >
+          رجوع
+        </Link>
+      </Conditonal>
+      <Conditonal condtion={end && voteName != "2" && voteName !== ""}>
+        <Conditonal condtion={getMafi(gameStruct) === voteName}>
+          <span className="text-4xl">
+            {" "}
+            <span className="text-main-100">{voteName}</span> هو المافيا{" "}
+          </span>
+        </Conditonal>
+        <Conditonal condtion={getMafi(gameStruct) !== voteName}>
+          <span className="text-4xl">
+            <span className="text-main-100">{voteName}</span> مش هو المافيا{" "}
+          </span>
+
+          <Conditonal condtion={gameStruct.length === 2}>
+            <span className="block mt-10 text-4xl text-center text-main-100">
+              فاز {getMafi(gameStruct)}
             </span>
-          ) : (
-            <>
-              <span className="text-4xl">
-                <span className="text-main-100">{voteName}</span> مش هو المافيا{" "}
-              </span>
-              {gameStruct.length === 2 && (
-                <span className="block mt-10 text-4xl text-center text-main-100">
-                  فاز {getMafi(gameStruct)}
-                </span>
-              )}
-              {gameStruct.length >= 3 && (
-                <Link
-                  to="/start"
-                  className="block p-2 mt-5 font-bold text-center text-white rounded-lg bg-main-200"
-                  state={{ game: gameStruct, users: getUsers(gameStruct) }}
-                >
-                  رجوع
-                </Link>
-              )}
-            </>
-          )}
-        </>
-      )}
+          </Conditonal>
+
+          <Conditonal condtion={gameStruct.length >= 3}>
+            <Link
+              to="/start"
+              className="block p-2 mt-5 font-bold text-center text-white rounded-lg bg-main-200"
+              state={{ game: gameStruct, users: getUsers(gameStruct) }}
+            >
+              رجوع
+            </Link>
+          </Conditonal>
+        </Conditonal>
+      </Conditonal>
     </div>
   );
 }

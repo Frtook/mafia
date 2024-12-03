@@ -6,6 +6,7 @@ import { getRondomArray, getStructGame } from "../helper/helper.ts";
 import { useNavigate } from "react-router-dom";
 import { getCookie, setCookie } from "../helper/cookeis.js";
 import Info from "./Info.tsx";
+import Conditonal from "../components/Conditonal.tsx";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ export default function Home() {
           المافيا يخلصوا عليهم.
         </p>
       </div>
-      {users && (
+      <Conditonal condtion={users}>
         <div className="grid grid-cols-1 gap-5 mt-10 sm:grid-cols-2 lg:grid-cols-3">
           {users.map((e: string, i: number) => (
             <Card
@@ -64,7 +65,7 @@ export default function Home() {
             />
           ))}
         </div>
-      )}
+      </Conditonal>
       <div className="flex mt-16">
         <Button
           className="w-full rounded-l-none"
@@ -92,7 +93,7 @@ export default function Home() {
           />
         </button>
       </div>
-      {isPopup.addUser && (
+      <Conditonal condtion={isPopup.addUser}>
         <Popup
           className="translate-y-[80%]"
           handleClose={() => setIsPopup({ ...isPopup, addUser: false })}
@@ -113,8 +114,8 @@ export default function Home() {
             type="text"
           />
         </Popup>
-      )}
-      {isPopup.EditUser && (
+      </Conditonal>
+      <Conditonal condtion={isPopup.EditUser}>
         <Popup
           className="translate-y-[80%]"
           handleClose={() => setIsPopup({ ...isPopup, EditUser: false })}
@@ -135,8 +136,9 @@ export default function Home() {
             type="text"
           />
         </Popup>
-      )}
-      {isPopup.info && (
+      </Conditonal>
+
+      <Conditonal condtion={isPopup.info}>
         <Popup
           handleClose={() => setIsPopup({ ...isPopup, info: false })}
           className="translate-y-[30px]"
@@ -145,7 +147,7 @@ export default function Home() {
         >
           <Info />
         </Popup>
-      )}
+      </Conditonal>
     </div>
   );
 }
