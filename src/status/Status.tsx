@@ -33,9 +33,12 @@ export default function Status() {
       if (mafia === ded) {
         setEnd(true);
         setVoteName(mafia);
+      } else {
+        const updatedGameStruct = deleteUser(ded, gameStruct);
+        setGameStruct(updatedGameStruct);
       }
     }
-  }, [gameStruct, ded]);
+  }, []);
   return (
     <div className="flex flex-col items-center justify-center gap-10 my-10">
       <Link to="/" className="self-start">
