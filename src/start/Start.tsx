@@ -1,24 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
 import { getMafi, getRuleAR } from "../helper/helper";
 import List from "./List";
 import Conditonal from "../components/Conditonal";
 import { gameRule } from "../helper/staticVar";
+import { Person } from "../helper/interfase";
 
 export default function Start() {
   const location = useLocation();
   const navigate = useNavigate();
-  const gameStruct = location.state.game;
+  const gameStruct = location.state.game as Person[];
   const users = location.state.users;
   const [next, setNext] = useState(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const currentUser = gameStruct[next] || {};
   const [show, setShow] = useState(false);
   const [like, setLike] = useState(false);
   const [disLike, setDisLike] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
+  useEffect(() => {
+    if (currentUser.rule === "citizen") {
+      setIsActive(true);
+    }
+  }, [currentUser]);
   function getChildData(data: string) {
     gameStruct[next].target = data;
+    setIsActive(true);
   }
 
   return (
@@ -76,6 +85,7 @@ export default function Start() {
               rule={currentUser.rule}
               sendTo={(e) => {
                 getChildData(e);
+
                 if (currentUser.rule === "inspector") {
                   if (currentUser.target === getMafi(gameStruct)) {
                     if (!disLike) {
@@ -94,11 +104,14 @@ export default function Start() {
 
         <Button
           className="mt-5"
+          disabled={!isActive || !show}
           handleClick={() => {
             setNext((prev) => (prev < users.length - 1 ? prev + 1 : prev));
             setShow(false);
             setDisLike(false);
             setLike(false);
+            setIsActive(false);
+
             if (next === users.length - 1) {
               navigate("/status", {
                 state: { gameStruct },

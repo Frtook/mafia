@@ -1,17 +1,15 @@
-
 export default function Button({
   text,
   handleClick,
   className,
   disabled,
   chlidren,
-}:{
-  text:string;
-  handleClick:()=>void;
-  className?:string;
-  disabled?:boolean;
-  chlidren?:React.ReactNode;
-
+}: {
+  text: string;
+  handleClick: () => void;
+  className?: string;
+  disabled?: boolean;
+  chlidren?: React.ReactNode;
 }) {
   return (
     <button

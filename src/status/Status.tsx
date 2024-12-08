@@ -20,11 +20,13 @@ export default function Status() {
   const [show, setShow] = useState(false);
   const [end, setEnd] = useState(false);
   const [voteName, setVoteName] = useState("");
+  const [isActive, setIsActive] = useState(false);
 
   const currentUser = gameStruct[next] || {};
 
   function getChildData(data: string) {
     gameStruct[next].vote = data;
+    setIsActive(true);
   }
   useEffect(() => {}, [gameStruct]);
   useEffect(() => {
@@ -36,6 +38,10 @@ export default function Status() {
       } else {
         const updatedGameStruct = deleteUser(ded, gameStruct);
         setGameStruct(updatedGameStruct);
+        if (updatedGameStruct.length === 2) {
+          setEnd(true);
+          setVoteName(mafia);
+        }
       }
     }
   }, []);
@@ -74,6 +80,7 @@ export default function Status() {
           />
           <Button
             text="التالي"
+            disabled={!isActive}
             handleClick={() => {
               setNext((prev) =>
                 prev < gameStruct.length - 1 ? prev + 1 : prev
@@ -93,6 +100,7 @@ export default function Status() {
                 setEnd(true);
                 setVote(false);
               }
+              setIsActive(false);
               setShow(false);
             }}
           />

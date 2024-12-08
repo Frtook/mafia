@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { getCookie, setCookie } from "../helper/cookeis.js";
 import Info from "./Info.tsx";
 import Conditonal from "../components/Conditonal.tsx";
+import { gameRule } from "../helper/staticVar.ts";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -74,9 +75,7 @@ export default function Home() {
           handleClick={() => {
             const randomUsers = getRondomArray(users);
             const rules = getRondomArray(
-              ["mafia", "physician", "inspector"].concat(
-                Array(users.length - 3).fill("citizen")
-              )
+              gameRule.concat(Array(users.length - 3).fill("citizen"))
             );
             const game = getStructGame(randomUsers, rules);
             navigate("/start", {
