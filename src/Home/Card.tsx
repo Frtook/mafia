@@ -1,3 +1,6 @@
+import editImage from "../assets/icons/edit.svg";
+import useImage from "../assets/icons/User.svg";
+
 export default function Card({
   name,
   handleDelete,
@@ -12,18 +15,8 @@ export default function Card({
       <img src="/icons/User.svg" alt="" />
       <p>{name}</p>
       <div className="flex gap-5">
-        <img
-          src="/icons/edit.svg"
-          onClick={handleEdit}
-          className="size-7"
-          alt=""
-        />
-        <img
-          src="/icons/delete.svg"
-          onClick={handleDelete}
-          className="size-7"
-          alt=""
-        />
+        <img src={editImage} onClick={handleEdit} className="size-7" alt="" />
+        <img src={useImage} onClick={handleDelete} className="size-7" alt="" />
       </div>
     </div>
   );

@@ -1,3 +1,8 @@
+import mafaImage from "../assets/icons/mafia.png";
+import citizenImage from "../assets/icons/citizen.png";
+import physicianImage from "../assets/icons/physician.png";
+import inspectorImage from "../assets/icons/inspector.png";
+
 import { Person } from "./interfase";
 export function getRondomArray(arr: string[]) {
   const arrRandom = Array(arr.length).fill(null);
@@ -94,4 +99,17 @@ export function getVoteName(game: Person[]): string {
 
 export function getUsers(game: Person[]) {
   return game.map((e) => e.user);
+}
+
+export function getImages(user: string) {
+  if (user === "physician") {
+    return physicianImage;
+  }
+  if (user === "mafia") {
+    return mafaImage;
+  }
+  if (user === "inspector") {
+    return inspectorImage;
+  }
+  return citizenImage;
 }

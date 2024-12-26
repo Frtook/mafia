@@ -1,3 +1,6 @@
+import infoImage from "../assets/icons/Info Square 02 Contained Filled.svg";
+import userImage from "../assets/icons/add-users.svg";
+
 import { useState, useEffect } from "react";
 import Popup from "./Popup";
 import Card from "./Card";
@@ -38,11 +41,7 @@ export default function Home() {
     <div className="container p-4 mx-auto ">
       <div className="flex items-center gap-5">
         <button onClick={() => setIsPopup({ ...isPopup, info: true })}>
-          <img
-            className="size-16"
-            src="/icons/Info Square 02 Contained Filled.svg"
-            alt=""
-          />
+          <img className="size-16" src={infoImage} alt="" />
         </button>
         <p className="text-center">
           للعبة دي اسمها "مافيا" وبتتلعب بين مجموعة من الناس. كل شخص في اللعبة
@@ -86,7 +85,7 @@ export default function Home() {
 
         <button onClick={() => setIsPopup({ ...isPopup, addUser: true })}>
           <img
-            src="/icons/add-users.svg"
+            src={userImage}
             alt=""
             className=" bg-main-100 hover:bg-main-100/70 rounded-l-2xl h-[40px]"
           />

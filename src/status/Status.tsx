@@ -7,7 +7,7 @@ import {
   getUsers,
 } from "../helper/helper";
 import Button from "../components/ui/Button";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Vote from "./Vote";
 import Conditonal from "../components/Conditonal";
 
@@ -24,10 +24,13 @@ export default function Status() {
 
   const currentUser = gameStruct[next] || {};
 
-  function getChildData(data: string) {
-    gameStruct[next].vote = data;
-    setIsActive(true);
-  }
+  const getChildData = useCallback(
+    (data: string) => {
+      gameStruct[next].vote = data;
+      setIsActive(true);
+    },
+    [next, gameStruct]
+  );
   useEffect(() => {}, [gameStruct]);
   useEffect(() => {
     if (ded) {
@@ -44,6 +47,7 @@ export default function Status() {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="flex flex-col items-center justify-center gap-10 my-10">

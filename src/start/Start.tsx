@@ -1,11 +1,18 @@
+//images
+import homeImage from "../assets/icons/home.svg";
+import likeImage from "../assets/icons/like.png";
+import disLikeImage from "../assets/icons/dislike.png";
+//hooks
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Button from "../components/ui/Button";
-import { getMafi, getRuleAR } from "../helper/helper";
-import List from "./List";
-import Conditonal from "../components/Conditonal";
+//helper
 import { gameRule } from "../helper/staticVar";
 import { Person } from "../helper/interfase";
+import { getImages, getMafi, getRuleAR } from "../helper/helper";
+//component
+import Button from "../components/ui/Button";
+import List from "./List";
+import Conditonal from "../components/Conditonal";
 
 export default function Start() {
   const location = useLocation();
@@ -34,7 +41,7 @@ export default function Start() {
     <div>
       <Link to="/">
         <img
-          src="/icons/home.svg"
+          src={homeImage}
           alt="home page"
           className="bg-main-200 p-2 size-[50px] rounded-2xl mr-5 mt-7 cursor-pointer"
         />
@@ -59,24 +66,16 @@ export default function Start() {
           </p>
           <img
             className="mx-auto bg-white size-20"
-            src={`/icons/${currentUser.rule}.png`}
+            src={getImages(currentUser.rule)}
             alt={currentUser.rule}
           />
 
           <Conditonal condtion={like}>
-            <img
-              src="/icons/like.png"
-              className="mx-auto size-1/4"
-              alt="like"
-            />
+            <img src={likeImage} className="mx-auto size-1/4" alt="like" />
           </Conditonal>
 
           <Conditonal condtion={disLike}>
-            <img
-              src="/icons/dislike.png"
-              className="mx-auto size-1/4"
-              alt="like"
-            />
+            <img src={disLikeImage} className="mx-auto size-1/4" alt="like" />
           </Conditonal>
 
           <Conditonal condtion={gameRule.includes(currentUser.rule)}>
