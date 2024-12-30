@@ -1,4 +1,15 @@
+// images
+import homeImage from "../assets/icons/home.svg";
+// hooks
+import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+
+//componets
+import Button from "../components/ui/Button";
+import Vote from "./Vote";
+import Conditonal from "../components/Conditonal";
+
+//helper
 import {
   getVoteName,
   deleteUser,
@@ -6,10 +17,6 @@ import {
   getMafi,
   getUsers,
 } from "../helper/helper";
-import Button from "../components/ui/Button";
-import { useCallback, useEffect, useState } from "react";
-import Vote from "./Vote";
-import Conditonal from "../components/Conditonal";
 
 export default function Status() {
   const location = useLocation();
@@ -53,7 +60,7 @@ export default function Status() {
     <div className="flex flex-col items-center justify-center gap-10 my-10">
       <Link to="/" className="self-start">
         <img
-          src="/icons/home.svg"
+          src={homeImage}
           alt="home page"
           className="bg-main-200 p-2 size-[50px] rounded-2xl mr-5 mt-7 cursor-pointer"
         />

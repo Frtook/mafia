@@ -1,7 +1,7 @@
 //images
 import homeImage from "../assets/icons/home.svg";
-import likeImage from "../assets/icons/like.png";
-import disLikeImage from "../assets/icons/dislike.png";
+import likeImage from "../assets/icons/like.svg";
+import disLikeImage from "../assets/icons/dislike.svg";
 //hooks
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -17,8 +17,8 @@ import Conditonal from "../components/Conditonal";
 export default function Start() {
   const location = useLocation();
   const navigate = useNavigate();
-  const gameStruct = location.state.game as Person[];
-  const users = location.state.users;
+  const [gameStruct, setGameStruct] = useState<Person[]>([]);
+  const [users, setUsers] = useState([]);
   const [next, setNext] = useState(0);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const currentUser = gameStruct[next] || {};
@@ -26,6 +26,37 @@ export default function Start() {
   const [like, setLike] = useState(false);
   const [disLike, setDisLike] = useState(false);
   const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    const savedState = localStorage.getItem("gameData");
+    if (savedState) {
+      const parsedState = JSON.parse(savedState);
+      setGameStruct(parsedState.game || []);
+      setUsers(parsedState.users || []);
+    } else {
+      alert("لا توجد بيانات متاحة للعبة، سيتم إعادتك إلى الصفحة الرئيسية.");
+      navigate("/");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (location.state) {
+      localStorage.setItem("gameData", JSON.stringify(location.state));
+    }
+  }, [location.state]);
+  useEffect(() => {
+    const preventBack = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    // Push an initial state to prevent default back behavior
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", preventBack);
+
+    return () => {
+      window.removeEventListener("popstate", preventBack);
+    };
+  }, []);
 
   useEffect(() => {
     if (currentUser.rule === "citizen") {
@@ -65,17 +96,25 @@ export default function Start() {
             <span className="text-main-100">{getRuleAR(currentUser.rule)}</span>
           </p>
           <img
-            className="mx-auto bg-white size-20"
+            className="p-2 mx-auto bg-white rounded-full size-20"
             src={getImages(currentUser.rule)}
             alt={currentUser.rule}
           />
 
           <Conditonal condtion={like}>
-            <img src={likeImage} className="mx-auto size-1/4" alt="like" />
+            <img
+              src={likeImage}
+              className="p-2 mx-auto bg-white rounded-full size-1/4"
+              alt="like"
+            />
           </Conditonal>
 
           <Conditonal condtion={disLike}>
-            <img src={disLikeImage} className="mx-auto size-1/4" alt="like" />
+            <img
+              src={disLikeImage}
+              className="p-2 mx-auto bg-white rounded-full size-1/4"
+              alt="like"
+            />
           </Conditonal>
 
           <Conditonal condtion={gameRule.includes(currentUser.rule)}>

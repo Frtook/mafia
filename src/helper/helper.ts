@@ -1,7 +1,7 @@
-import mafaImage from "../assets/icons/mafia.png";
-import citizenImage from "../assets/icons/citizen.png";
-import physicianImage from "../assets/icons/physician.png";
-import inspectorImage from "../assets/icons/inspector.png";
+import mafaImage from "../assets/icons/mafia.svg";
+import citizenImage from "../assets/icons/citizen.svg";
+import physicianImage from "../assets/icons/physician.svg";
+import inspectorImage from "../assets/icons/inspector.svg";
 
 import { Person } from "./interfase";
 export function getRondomArray(arr: string[]) {
