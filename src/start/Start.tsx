@@ -17,8 +17,8 @@ import Conditonal from "../components/Conditonal";
 export default function Start() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [gameStruct, setGameStruct] = useState<Person[]>([]);
-  const [users, setUsers] = useState([]);
+  const gameStruct = location.state.game as Person[];
+  const users = location.state.users;
   const [next, setNext] = useState(0);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const currentUser = gameStruct[next] || {};
@@ -26,37 +26,6 @@ export default function Start() {
   const [like, setLike] = useState(false);
   const [disLike, setDisLike] = useState(false);
   const [isActive, setIsActive] = useState(false);
-
-  useEffect(() => {
-    const savedState = localStorage.getItem("gameData");
-    if (savedState) {
-      const parsedState = JSON.parse(savedState);
-      setGameStruct(parsedState.game || []);
-      setUsers(parsedState.users || []);
-    } else {
-      alert("لا توجد بيانات متاحة للعبة، سيتم إعادتك إلى الصفحة الرئيسية.");
-      navigate("/");
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    if (location.state) {
-      localStorage.setItem("gameData", JSON.stringify(location.state));
-    }
-  }, [location.state]);
-  useEffect(() => {
-    const preventBack = () => {
-      window.history.pushState(null, "", window.location.href);
-    };
-
-    // Push an initial state to prevent default back behavior
-    window.history.pushState(null, "", window.location.href);
-    window.addEventListener("popstate", preventBack);
-
-    return () => {
-      window.removeEventListener("popstate", preventBack);
-    };
-  }, []);
 
   useEffect(() => {
     if (currentUser.rule === "citizen") {
