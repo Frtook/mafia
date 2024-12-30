@@ -110,6 +110,7 @@ export default function Home() {
             value={user}
             onChange={(e) => setUser(e.target.value)}
             type="text"
+            autoFocus={true}
           />
         </Popup>
       </Conditonal>
@@ -132,6 +133,7 @@ export default function Home() {
             value={user}
             onChange={(e) => setUser(e.target.value)}
             type="text"
+            autoFocus={true}
           />
         </Popup>
       </Conditonal>
