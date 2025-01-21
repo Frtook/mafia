@@ -1,53 +1,88 @@
-import infoImage from "../assets/icons/Info Square 02 Contained Filled.svg";
-import userImage from "../assets/icons/add-users.svg";
-
+//images
+import infoImage from "../..//assets/icons/info.svg";
+import userImage from "../..//assets/icons/add-users.svg";
+//components
+import Button from "../../components/ui/Button.tsx";
+import Conditonal from "../../components/Conditonal.tsx";
+//hooks
 import { useState, useEffect } from "react";
-import Popup from "./Popup";
-import Card from "./Card";
-import Button from "../components/ui/Button";
-import { getRondomArray, getStructGame } from "../helper/helper.ts";
+//home
+import Popup from "./Popup.tsx";
+import Card from "./Card.tsx";
+//helper
+import { getRondomArray, getStructGame } from "../../helper/helper.ts";
 import { useNavigate } from "react-router-dom";
-import { getCookie, setCookie } from "../helper/cookeis.js";
+import { getItem, setItem } from "../../helper/localStorage.js";
 import Info from "./Info.tsx";
-import Conditonal from "../components/Conditonal.tsx";
-import { gameRule } from "../helper/staticVar.ts";
+import { gameRule } from "../../helper/staticVar.ts";
 
 export default function Home() {
   const navigate = useNavigate();
+  const localUsers = JSON.parse(getItem("users") || "[]");
   const [isPopup, setIsPopup] = useState({
     info: false,
     addUser: false,
     EditUser: false,
   });
-  const cookieValue = getCookie("users") || "";
-  const parsedUsers = cookieValue ? JSON.parse(cookieValue) : [];
-  const [users, setUsers] = useState(parsedUsers);
 
-  useEffect(() => {
-    const storedUsers = getCookie("users");
-    if (storedUsers) {
-      setUsers(JSON.parse(storedUsers));
-    }
-  }, []);
-
-  useEffect(() => {
-    setCookie("users", JSON.stringify(users));
-  }, [users]);
-
+  const [users, setUsers] = useState(localUsers);
   const [user, setUser] = useState("");
   const [indexEdit, setIndexEdit] = useState(0);
 
+  useEffect(() => {
+    setItem("users", JSON.stringify(users));
+  }, [users]);
+
+  useEffect(() => {
+    if (isPopup.EditUser) {
+      setUser(users[indexEdit] || "");
+    }
+  }, [isPopup.EditUser, indexEdit, users]);
+
+  const handleStartClick = () => {
+    const randomUsers = getRondomArray(users);
+    const rules = getRondomArray(
+      gameRule.concat(Array(users.length - 3).fill("citizen"))
+    );
+    const game = getStructGame(randomUsers, rules);
+    navigate("/start", {
+      state: { game, users: randomUsers },
+    });
+  };
+
+  const handleAddUser = () => {
+    if (user.trim()) {
+      setIsPopup({ ...isPopup, addUser: false });
+      setUsers([...users, user]);
+      setUser("");
+    }
+  };
+  const handleEditUser = () => {
+    setUsers([...users, user].filter((_, index) => index !== indexEdit));
+    setIsPopup({ ...isPopup, EditUser: false });
+    setUser("");
+  };
+
+  const handleKeyDownAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleAddUser();
+    }
+  };
+  const handleKeyDownEdit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleEditUser();
+    }
+  };
   return (
     <div className="container p-4 mx-auto ">
       <div className="flex items-center gap-5">
         <button onClick={() => setIsPopup({ ...isPopup, info: true })}>
           <img className="size-16" src={infoImage} alt="" />
         </button>
-        <p className="text-center">
-          للعبة دي اسمها "مافيا" وبتتلعب بين مجموعة من الناس. كل شخص في اللعبة
-          بيبقى ليه دور معين، والهدف إن الفريق الطيب يعرف مين المافيا قبل ما
-          المافيا يخلصوا عليهم.
-        </p>
+        <h1 className="text-center">
+          لعبة "مافيا" هي لعبة جماعية حيث يحاول الفريق كشف المافيا قبل أن يقضي
+          عليهم.
+        </h1>
       </div>
       <Conditonal condtion={users}>
         <div className="grid grid-cols-1 gap-5 mt-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -66,21 +101,13 @@ export default function Home() {
           ))}
         </div>
       </Conditonal>
+      {/* start button */}
       <div className="flex mt-16">
         <Button
           className="w-full rounded-l-none"
           disabled={users.length < 4}
           text="بدا"
-          handleClick={() => {
-            const randomUsers = getRondomArray(users);
-            const rules = getRondomArray(
-              gameRule.concat(Array(users.length - 3).fill("citizen"))
-            );
-            const game = getStructGame(randomUsers, rules);
-            navigate("/start", {
-              state: { game, users: randomUsers },
-            });
-          }}
+          handleClick={handleStartClick}
         />
 
         <button onClick={() => setIsPopup({ ...isPopup, addUser: true })}>
@@ -91,53 +118,45 @@ export default function Home() {
           />
         </button>
       </div>
+      {/* Popup Add */}
       <Conditonal condtion={isPopup.addUser}>
         <Popup
           className="translate-y-[80%]"
           handleClose={() => setIsPopup({ ...isPopup, addUser: false })}
           title="اضافه لاعب"
-          handleClick={() => {
-            if (user.trim()) {
-              setIsPopup({ ...isPopup, addUser: false });
-              setUsers([...users, user]);
-              setUser("");
-            }
-          }}
+          handleClick={handleAddUser}
         >
           <input
             className="w-full p-2 bg-transparent border rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-main-100 border-main-100"
             placeholder="ادخل لاعب"
             value={user}
             onChange={(e) => setUser(e.target.value)}
+            onKeyDown={handleKeyDownAdd}
             type="text"
             autoFocus={true}
           />
         </Popup>
       </Conditonal>
+      {/* Popup Edit */}
       <Conditonal condtion={isPopup.EditUser}>
         <Popup
           className="translate-y-[80%]"
           handleClose={() => setIsPopup({ ...isPopup, EditUser: false })}
           title={`تعديل ${users[indexEdit]}`}
-          handleClick={() => {
-            setUsers(
-              [...users, user].filter((_, index) => index !== indexEdit)
-            );
-            setIsPopup({ ...isPopup, EditUser: false });
-            setUser("");
-          }}
+          handleClick={handleEditUser}
         >
           <input
             className="w-full p-2 bg-transparent border rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-main-100 border-main-100"
             placeholder="ادخل لاعب"
             value={user}
             onChange={(e) => setUser(e.target.value)}
+            onKeyDown={handleKeyDownEdit}
             type="text"
             autoFocus={true}
           />
         </Popup>
       </Conditonal>
-
+      {/* Popup Info */}
       <Conditonal condtion={isPopup.info}>
         <Popup
           handleClose={() => setIsPopup({ ...isPopup, info: false })}

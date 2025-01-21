@@ -1,4 +1,4 @@
-import { Person } from "../helper/interfase";
+import { Person } from "../../helper/interfase";
 
 export default function Vote({
   game,

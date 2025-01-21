@@ -1,18 +1,18 @@
 //images
-import homeImage from "../assets/icons/home.svg";
-import likeImage from "../assets/icons/like.svg";
-import disLikeImage from "../assets/icons/dislike.svg";
+import homeImage from "../../assets/icons/home.svg";
+import likeImage from "../../assets/icons/like.svg";
+import disLikeImage from "../../assets/icons/dislike.svg";
 //hooks
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 //helper
-import { gameRule } from "../helper/staticVar";
-import { Person } from "../helper/interfase";
-import { getImages, getMafi, getRuleAR } from "../helper/helper";
+import { gameRule } from "../../helper/staticVar";
+import { Person } from "../../helper/interfase";
+import { getImages, getMafi, getRuleAR } from "../../helper/helper";
 //component
-import Button from "../components/ui/Button";
+import Button from "../../components/ui/Button";
 import List from "./List";
-import Conditonal from "../components/Conditonal";
+import Conditonal from "../../components/Conditonal";
 
 export default function Start() {
   const location = useLocation();
@@ -20,8 +20,7 @@ export default function Start() {
   const gameStruct = location.state.game as Person[];
   const users = location.state.users;
   const [next, setNext] = useState(0);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const currentUser = gameStruct[next] || {};
+  const currentUser = useMemo(() => gameStruct[next] || {}, [gameStruct, next]);
   const [show, setShow] = useState(false);
   const [like, setLike] = useState(false);
   const [disLike, setDisLike] = useState(false);
@@ -32,9 +31,36 @@ export default function Start() {
       setIsActive(true);
     }
   }, [currentUser]);
+
   function getChildData(data: string) {
     gameStruct[next].target = data;
     setIsActive(true);
+
+    if (currentUser.rule === "inspector") {
+      if (currentUser.target === getMafi(gameStruct)) {
+        if (!disLike) {
+          setLike(true);
+        }
+      } else {
+        if (!like) {
+          setDisLike(true);
+        }
+      }
+    }
+  }
+
+  function handleClickSubmit() {
+    setNext((prev) => (prev < users.length - 1 ? prev + 1 : prev));
+    setShow(false);
+    setDisLike(false);
+    setLike(false);
+    setIsActive(false);
+
+    if (next === users.length - 1) {
+      navigate("/status", {
+        state: { gameStruct },
+      });
+    }
   }
 
   return (
@@ -47,9 +73,12 @@ export default function Start() {
         />
       </Link>
       <main className="w-[90%] mx-auto shadow-xl text-center mt-8 flex flex-col gap-5">
-        <p className="mb-5 text-3xl font-bold text-main-200">
-          {currentUser.user}
-        </p>
+        <div className="mb-5 text-2xl text-gray-400">
+          اعطي الجوال لللاعب
+          <p className="mt-8 text-4xl font-bold text-main-200">
+            {currentUser.user}
+          </p>
+        </div>
 
         <Conditonal condtion={!show}>
           <Button
@@ -92,18 +121,6 @@ export default function Start() {
               rule={currentUser.rule}
               sendTo={(e) => {
                 getChildData(e);
-
-                if (currentUser.rule === "inspector") {
-                  if (currentUser.target === getMafi(gameStruct)) {
-                    if (!disLike) {
-                      setLike(true);
-                    }
-                  } else {
-                    if (!like) {
-                      setDisLike(true);
-                    }
-                  }
-                }
               }}
             />
           </Conditonal>
@@ -112,19 +129,7 @@ export default function Start() {
         <Button
           className="mt-5"
           disabled={!isActive || !show}
-          handleClick={() => {
-            setNext((prev) => (prev < users.length - 1 ? prev + 1 : prev));
-            setShow(false);
-            setDisLike(false);
-            setLike(false);
-            setIsActive(false);
-
-            if (next === users.length - 1) {
-              navigate("/status", {
-                state: { gameStruct },
-              });
-            }
-          }}
+          handleClick={handleClickSubmit}
           text="التالي"
         />
       </main>

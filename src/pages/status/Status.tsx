@@ -1,13 +1,13 @@
 // images
-import homeImage from "../assets/icons/home.svg";
+import homeImage from "../../assets/icons/home.svg";
 // hooks
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 //componets
-import Button from "../components/ui/Button";
+import Button from "../..//components/ui/Button";
 import Vote from "./Vote";
-import Conditonal from "../components/Conditonal";
+import Conditonal from "../../components/Conditonal";
 
 //helper
 import {
@@ -16,7 +16,7 @@ import {
   whoIsDed,
   getMafi,
   getUsers,
-} from "../helper/helper";
+} from "../../helper/helper";
 
 export default function Status() {
   const location = useLocation();
@@ -56,6 +56,25 @@ export default function Status() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function handleClickSubmit() {
+    setNext((prev) => (prev < gameStruct.length - 1 ? prev + 1 : prev));
+    if (next === gameStruct.length - 1) {
+      const updatedVoteName = getVoteName(gameStruct);
+      setVoteName(updatedVoteName);
+      if (getMafi(gameStruct) === updatedVoteName) {
+        setVote(false);
+      } else {
+        const updatedGameStruct = deleteUser(updatedVoteName, gameStruct);
+        setGameStruct(updatedGameStruct);
+      }
+      setEnd(true);
+      setVote(false);
+    }
+    setIsActive(false);
+    setShow(false);
+  }
+
   return (
     <div className="flex flex-col items-center justify-center gap-10 my-10">
       <Link to="/" className="self-start">
@@ -92,28 +111,7 @@ export default function Status() {
           <Button
             text="التالي"
             disabled={!isActive}
-            handleClick={() => {
-              setNext((prev) =>
-                prev < gameStruct.length - 1 ? prev + 1 : prev
-              );
-              if (next === gameStruct.length - 1) {
-                const updatedVoteName = getVoteName(gameStruct);
-                setVoteName(updatedVoteName);
-                if (getMafi(gameStruct) === updatedVoteName) {
-                  setVote(false);
-                } else {
-                  const updatedGameStruct = deleteUser(
-                    updatedVoteName,
-                    gameStruct
-                  );
-                  setGameStruct(updatedGameStruct);
-                }
-                setEnd(true);
-                setVote(false);
-              }
-              setIsActive(false);
-              setShow(false);
-            }}
+            handleClick={handleClickSubmit}
           />
         </Conditonal>
       </Conditonal>
@@ -131,13 +129,12 @@ export default function Status() {
       <Conditonal condtion={end && voteName != "2" && voteName !== ""}>
         <Conditonal condtion={getMafi(gameStruct) === voteName}>
           <span className="text-4xl">
-            {" "}
-            <span className="text-main-100">{voteName}</span> هو المافيا{" "}
+            <span className="text-main-100">{voteName}</span> هو المافيا
           </span>
         </Conditonal>
         <Conditonal condtion={getMafi(gameStruct) !== voteName}>
           <span className="text-4xl">
-            <span className="text-main-100">{voteName}</span> مش هو المافيا{" "}
+            <span className="text-main-100">{voteName}</span> مش هو المافيا
           </span>
 
           <Conditonal condtion={gameStruct.length === 2}>

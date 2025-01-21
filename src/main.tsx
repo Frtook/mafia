@@ -4,8 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
-import Start from "./start/Start.tsx";
-import Status from "./status/Status.tsx";
+import Start from "./pages/start/Start.tsx";
+import Status from "./pages/status/Status.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>

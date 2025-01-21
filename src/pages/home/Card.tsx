@@ -1,6 +1,6 @@
-import editImage from "../assets/icons/edit.svg";
-import useImage from "../assets/icons/User.svg";
-import deleteImage from "../assets/icons/delete.svg";
+import editImage from "../../assets/icons/edit.svg";
+import useImage from "../../assets/icons/User.svg";
+import deleteImage from "../..//assets/icons/delete.svg";
 export default function Card({
   name,
   handleDelete,
